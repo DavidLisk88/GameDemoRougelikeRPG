@@ -36,4 +36,7 @@ class Path {
         if (hasCheckpoint) System.out.println("Checkpoint ahead!");
         if (hasMaiden) System.out.println("A Maiden is nearby.");
     }
+
+
+
 }

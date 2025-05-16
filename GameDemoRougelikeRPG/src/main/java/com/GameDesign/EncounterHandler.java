@@ -1,5 +1,6 @@
 package com.GameDesign;
 
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -179,12 +180,13 @@ public class EncounterHandler {
                 handleWarriorEncounter();
                 break;
             case 2:
-                handleMaidenEncounter();
-                break;
+             if (player.getMorality().getMorality() >= 0){
+                 handleMaidenEncounter();
+             } else {
+                 handleFairyEncounter();
+             }
+             break;
             case 3:
-                handleFairyEncounter();
-                break;
-            case 4:
                 handleDemonEncounter();
                 break;
             default:
@@ -220,4 +222,37 @@ public class EncounterHandler {
             battle.startBattle();
         }
     }
+
+
+    public void handleTrade(String morality, Inventory inventory) {
+        Scanner scanner = new Scanner(System.in);
+        List<ItemGenerator.Item> shopItems = ItemGenerator.generateItem(morality);
+
+        System.out.println("You meet a " + (morality.equals("good") ? "Companion" : "Merchant") + "!");
+        System.out.println("They offer these items:");
+
+        for (int i = 0; i < shopItems.size(); i++) {
+            System.out.println((i + 1) + ". " + shopItems.get(i));
+        }
+
+        System.out.println("Select an item number to take (or 0 to skip): ");
+        int choice = scanner.nextInt();
+
+        if (choice > 0 && choice <= shopItems.size()) {
+            inventory.addItem(shopItems.get(choice - 1));
+            System.out.println("Item added to your inventory.");
+        }
+
+        System.out.println("Would you like to store any item at a checkpoint? (y/n)");
+        if (scanner.next().equalsIgnoreCase("y")) {
+            inventory.displayInventory();
+            System.out.print("Enter item number to store: ");
+            int storeChoice = scanner.nextInt();
+            if (storeChoice > 0 && storeChoice <= inventory.getInventory().size()) {
+                inventory.storeItemAtCheckpoint(inventory.getInventory().get(storeChoice - 1));
+                System.out.println("Item stored at checkpoint.");
+            }
+        }
+    }
+
 }

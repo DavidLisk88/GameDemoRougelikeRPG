@@ -1,59 +1,91 @@
 package com.GameDesign;
 
+import java.util.Scanner;
+
 public class Battle {
-    Player player;
-    Enemy enemy;
-    Accomplice accomplice; // Add accomplice for the battle
+    private Player player;
+    private Enemy enemy;
+    private Inventory inventory;
+    private MoralitySystem moralitySystem;
 
-    public Battle(Player player, Accomplice accomplice, Enemy enemy) {
-        this.player = player;
-        this.accomplice = accomplice; // Set accomplice
-        this.enemy = enemy;
-    }
-
-    // Fixed constructor that doesn't require accomplice
-    public Battle(Player player, Enemy enemy) {
+    public Battle(Player player, Enemy enemy, Inventory inventory, MoralitySystem moralitySystem) {
         this.player = player;
         this.enemy = enemy;
-        this.accomplice = null;
-    }
-
-    // Fixed: Adding implementation for this static method
-    public static void startBattle(Player player, Demon demon) {
-        Battle battle = new Battle(player, demon);
-        battle.startBattle();
+        this.inventory = inventory;
+        this.moralitySystem = moralitySystem;
     }
 
     public void startBattle() {
-        while (player.isAlive() && enemy.isAlive()) {
-            playerTurn();
-            if (enemy.isAlive()) enemyTurn();
-            if (accomplice != null && accomplice.isAlive() && enemy.isAlive()) accompliceTurn(); // Check if accomplice is null
-        }
+        Scanner scanner = new Scanner(System.in);
+        int round = 1;
 
-        if (player.isAlive()) {
-            System.out.println("You won the battle!");
-            player.collectLoot(enemy); // Loot collection if enemy is defeated
-        } else {
-            System.out.println("You lost the battle.");
-            // Reset game or adjust player stats
+        while (player.isAlive() && enemy.isAlive()) {
+            System.out.println("\n--- Round " + round + " ---");
+            playerTurn(scanner);
+            if (!enemy.isAlive()) {
+                System.out.println("You defeated " + enemy.getName() + "!");
+                break;
+            }
+
+            enemyTurn();
+            if (!player.isAlive()) {
+                System.out.println("You were defeated by " + enemy.getName() + "...");
+                break;
+            }
+
+            // 🎁 Soldier/Warrior reward after 2nd or 3rd round
+            if ((round == 2 || round == 3) && (enemy instanceof Soldier || enemy instanceof Warrior)) {
+                ItemGenerator.Item reward = ItemGenerator.generateItem("random", moralitySystem.getMorality());
+                inventory.addItem(reward);
+                System.out.println(enemy.getName() + " rewards you with: " + reward);
+            }
+
+            round++;
         }
     }
 
-    private void playerTurn() {
-        System.out.println("Your turn. Choose an action.");
-        // Handle player actions (Attack, Use Item, Defend)
-        player.attack(enemy);
+    private void playerTurn(Scanner scanner) {
+        System.out.println("Choose your action:");
+        System.out.println("1. Attack");
+
+        if (enemy instanceof Demon) {
+            System.out.println("2. Offer valuable to recruit Demon");
+        }
+
+        int choice = scanner.nextInt();
+
+        if (choice == 1) {
+            int damage = player.attack();
+            enemy.takeDamage(damage);
+            System.out.println("You dealt " + damage + " damage to " + enemy.getName());
+        } else if (choice == 2 && enemy instanceof Demon) {
+            inventory.displayInventory();
+            System.out.print("Enter the number of the item to offer: ");
+            int offerIndex = scanner.nextInt() - 1;
+
+            if (offerIndex >= 0 && offerIndex < inventory.getInventory().size()) {
+                ItemGenerator.Item item = inventory.getInventory().get(offerIndex);
+
+                if (item.type.equalsIgnoreCase("valuable")) {
+                    System.out.println("The Demon accepts your offering and joins your side!");
+                    inventory.removeItem(item);
+                    moralitySystem.shiftTowardsEvil(); // Example logic
+                    enemy.convertToAlly(); // Optional: flag that removes enemy from combat
+                    enemy.setHealth(0); // Ends the battle
+                } else {
+                    System.out.println("The Demon rejects your offering.");
+                }
+            } else {
+                System.out.println("Invalid item selection.");
+            }
+        } else {
+            System.out.println("Invalid choice. Turn skipped.");
+        }
     }
 
     private void enemyTurn() {
-        System.out.println("Enemy's turn.");
-        // Handle enemy actions (attack back)
-        enemy.attack(player);
-    }
-
-    private void accompliceTurn() {
-        System.out.println(accomplice.getName() + "'s turn.");
-        accomplice.fight(enemy);  // Allow accomplice to attack the enemy
+        int damage = enemy.attack();
+        player.takeDamage(damage);
+        System.out.println(enemy.getName() + " dealt " + damage + " damage to you.");
     }
 }
