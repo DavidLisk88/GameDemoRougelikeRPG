@@ -10,10 +10,12 @@ public class Game {
     Player player;
     private String currentWorld;  // "RealWorld" or "PortalWorld"
     private static final String SAVE_FILE = "src/main/java/resources/game_save.txt"; // File to save progress
+    private EncounterHandler encounterHandler; // Added EncounterHandler reference
 
     public Game(Player player) {
         this.player = player;
         this.currentWorld = "RealWorld"; // Default start world
+        this.encounterHandler = new EncounterHandler(player); // Initialize EncounterHandler
     }
 
     // Getter for player
@@ -145,23 +147,21 @@ public class Game {
             case 0:
                 // Encounter a battle
                 System.out.println("You encounter a wild Demon!");
-                Battle.startBattle(player, new Demon());
+                encounterHandler.handleDemonEncounter(); // Fixed: Use encounterHandler
                 break;
             case 1:
                 // Find a checkpoint (Add coins)
-                int coinsFound = rand.nextInt(50) + 10;  // Random coins between 10 and 50
-                player.addCoins(coinsFound);
-                System.out.println("You find " + coinsFound + " coins!");
+                encounterHandler.handleCoinEncounter(); // Fixed: Use encounterHandler
                 break;
             case 2:
                 // Meet a Maiden (Good morality)
                 System.out.println("You encounter a Maiden! Would you like to meet her?");
-                handleMaidenEncounter();
+                encounterHandler.handleMaidenEncounter(); // Fixed: Use encounterHandler
                 break;
             case 3:
                 // Meet a Fairy (Evil morality)
                 System.out.println("You encounter a Fairy! Would you like to meet her?");
-                handleFairyEncounter();
+                encounterHandler.handleFairyEncounter(); // Fixed: Use encounterHandler
                 break;
             case 4:
                 // Meet a Soldier or Warrior (Choose morality)
@@ -174,46 +174,6 @@ public class Game {
         }
     }
 
-    private void handleMaidenEncounter() {
-        Random rand = new Random();
-        int maidenBuff = rand.nextInt(5) + 1;  // Random buff between 1 and 5
-        System.out.println("This Maiden has a buff of " + maidenBuff + " to your stats!");
-
-        System.out.println("1. Accept Maiden's help");
-        System.out.println("2. Decline");
-
-        int choice = scanner.nextInt();
-        scanner.nextLine();  // consume newline
-
-        if (choice == 1) {
-            player.setAttack(player.getAttack() + maidenBuff);
-            player.setDefense(player.getDefense() + maidenBuff);
-            System.out.println("Maiden's buff added to your stats!");
-        } else {
-            System.out.println("You leave the Maiden behind.");
-        }
-    }
-
-    private void handleFairyEncounter() {
-        Random rand = new Random();
-        int fairyDebuff = rand.nextInt(3) + 1;  // Random debuff between 1 and 3
-        System.out.println("This Fairy has a debuff of " + fairyDebuff + " to your stats!");
-
-        System.out.println("1. Accept Fairy's influence");
-        System.out.println("2. Decline");
-
-        int choice = scanner.nextInt();
-        scanner.nextLine();  // consume newline
-
-        if (choice == 1) {
-            player.setAttack(player.getAttack() - fairyDebuff);
-            player.setDefense(player.getDefense() - fairyDebuff);
-            System.out.println("Fairy's debuff applied to your stats!");
-        } else {
-            System.out.println("You leave the Fairy behind.");
-        }
-    }
-
     private void handleSoldierWarriorEncounter() {
         System.out.println("1. Ally with Soldier (Good morality) for 3 paths");
         System.out.println("2. Fight Warrior (Evil morality)");
@@ -223,13 +183,12 @@ public class Game {
 
         if (choice == 1) {
             System.out.println("You have allied with the Soldier for 3 paths!");
+            encounterHandler.handleSoldierEncounter(); // Fixed: Use encounterHandler
         } else {
             System.out.println("You choose to fight the Warrior!");
-            Battle.startBattle(player, new Demon());  // Example of battle with Warrior (could be a new class)
+            encounterHandler.handleWarriorEncounter(); // Fixed: Use encounterHandler
         }
     }
-
-
 
     private void adjustMorality() {
         Random rand = new Random();

@@ -28,8 +28,8 @@ public class GameLoop {
                 Enemy enemy = createRandomEnemy();
 
                 // Start a battle with the enemy
-                Battle battle = new Battle(player, enemy);
-                battle.startBattle();  // Assuming start method in Battle class handles the logic
+                Battle battle = new Battle(player, null, enemy); // Fixed: Added null for accomplice parameter
+                battle.startBattle();  // Assuming startBattle method in Battle class handles the logic
             }
 
             if (path.hasCheckpoint) {

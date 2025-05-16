@@ -15,11 +15,14 @@ public class Companion extends Accomplice {
 
     @Override
     public boolean isAlive() {
-        return false;
+        return health > 0; // Fixed: Return true if health is greater than 0
     }
 
     @Override
     public void fight(Enemy enemy) {
-
+        // Fixed: Implement fight logic
+        int damage = Math.max(0, getAttack() - enemy.getDefense());
+        enemy.takeDamage(damage);
+        System.out.println(name + " attacks " + enemy.getName() + " for " + damage + " damage!");
     }
 }

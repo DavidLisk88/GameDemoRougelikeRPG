@@ -1,27 +1,19 @@
 package com.GameDesign;
 
 public class Demon extends Enemy {
-    private int health;
-    private int attack;
-    private int defense;
+    // Removed redundant fields as they shadow parent class fields
 
     public Demon() {
         super("Demon of Despair", 100, 25, 10, 50);  // Example stats
     }
 
+    @Override
     public boolean isAlive() {
-        return health > 0;
+        return getHealth() > 0;
     }
 
+    @Override
     public void takeDamage(int damage) {
-        health -= damage;
-    }
-
-    public int getAttack() {
-        return attack;
-    }
-
-    public int getDefense() {
-        return defense;
+        super.takeDamage(damage);
     }
 }

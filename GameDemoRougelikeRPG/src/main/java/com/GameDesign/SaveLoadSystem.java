@@ -4,8 +4,7 @@ import java.io.*;
 
 public class SaveLoadSystem {
     private static final String SAVE_FILE = "src/main/resources/game_save.txt";// Path to save file
-    String path = System.getProperty("user.dir") + "/src/main/resources/game_save.txt";
-
+    // Fixed: Removed redundant path field
 
     // Save player progress to a file
     public static void saveProgress(Game game) {
@@ -23,34 +22,4 @@ public class SaveLoadSystem {
     }
 
     // Load player progress from a file
-    public static Game loadProgress() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(SAVE_FILE))) {
-            String playerName = reader.readLine();  // Load player's name
-            int playerHealth = Integer.parseInt(reader.readLine());  // Load player's health
-            int playerAttack = Integer.parseInt(reader.readLine());  // Load player's attack
-            int playerDefense = Integer.parseInt(reader.readLine());  // Load player's defense
-            int playerCoins = Integer.parseInt(reader.readLine());  // Load player's coins
-            String currentWorld = reader.readLine();  // Load the current world
-
-            // Create player object
-            Player player = new Player(playerName);
-            player.setHealth(playerHealth);
-            player.setAttack(playerAttack);
-            player.setDefense(playerDefense);
-            player.setCoins(playerCoins);
-
-            // Return the game object with the loaded data
-            Game game = new Game(player);
-            game.setCurrentWorld(currentWorld);  // Use setter to update the world
-            System.out.println("Loaded previous progress.");
-
-            return game;
-
-        } catch (IOException | NumberFormatException e) {
-            // If the file doesn't exist or is corrupted, start a new game
-            System.out.println("No saved game found. Starting a new game...");
-            Player player = new Player("Hero");  // Default new player
-            return new Game(player);
-        }
-    }
-}
+    public static

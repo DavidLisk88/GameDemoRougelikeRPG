@@ -11,14 +11,17 @@ public class Battle {
         this.enemy = enemy;
     }
 
+    // Fixed: Adding implementation for this static method
     public static void startBattle(Player player, Demon demon) {
+        Battle battle = new Battle(player, null, demon);
+        battle.startBattle();
     }
 
     public void startBattle() {
         while (player.isAlive() && enemy.isAlive()) {
             playerTurn();
             if (enemy.isAlive()) enemyTurn();
-            if (accomplice.isAlive() && enemy.isAlive()) accompliceTurn(); // Allow accomplice to attack
+            if (accomplice != null && accomplice.isAlive() && enemy.isAlive()) accompliceTurn(); // Check if accomplice is null
         }
 
         if (player.isAlive()) {

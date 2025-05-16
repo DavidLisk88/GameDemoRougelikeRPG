@@ -104,7 +104,7 @@ public class EncounterHandler {
         System.out.println("1. Yes");
         System.out.println("2. No");
 
-        int choice = scanner.nextInt();
+        int choice = getValidInput(1, 2); // Fixed: Use getValidInput instead of direct scanner.nextInt()
         if (choice == 1) {
             // Show Fairy's stats
             System.out.println(fairy.getName() + "'s Stats:");
@@ -121,7 +121,7 @@ public class EncounterHandler {
         System.out.println("1. Yes");
         System.out.println("2. No");
 
-        choice = scanner.nextInt();
+        choice = getValidInput(1, 2); // Fixed: Use getValidInput instead of direct scanner.nextInt()
         if (choice == 1) {
             // Add Fairy to player (if you want to track her in your party)
             player.addAccomplice(fairy);
@@ -134,7 +134,6 @@ public class EncounterHandler {
             System.out.println("Invalid choice.");
         }
     }
-
 
     // Method to handle Demon encounter (battle scenario)
     public void handleDemonEncounter() {
