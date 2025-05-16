@@ -3,8 +3,8 @@ package com.GameDesign;
 import java.util.Random;
 
 class World {
-    String currentWorld;
-    Random rand = new Random();
+    private String currentWorld; // Fixed: Made field private
+    private Random rand = new Random();
 
     public World() {
         currentWorld = "Real World";  // Default start in the real world
@@ -69,5 +69,10 @@ class World {
 
     public String getCurrentWorld() {
         return currentWorld;
+    }
+
+    // Added setter for currentWorld to maintain encapsulation
+    public void setCurrentWorld(String world) {
+        this.currentWorld = world;
     }
 }

@@ -4,7 +4,6 @@ import java.io.*;
 
 public class SaveLoadSystem {
     private static final String SAVE_FILE = "src/main/resources/game_save.txt";// Path to save file
-    // Fixed: Removed redundant path field
 
     // Save player progress to a file
     public static void saveProgress(Game game) {
@@ -22,4 +21,31 @@ public class SaveLoadSystem {
     }
 
     // Load player progress from a file
-    public static
+    public static Game loadProgress() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(SAVE_FILE))) {
+            String playerName = reader.readLine();
+            int playerHealth = Integer.parseInt(reader.readLine());
+            int playerAttack = Integer.parseInt(reader.readLine());
+            int playerDefense = Integer.parseInt(reader.readLine());
+            int playerCoins = Integer.parseInt(reader.readLine());
+            String world = reader.readLine(); // Load the world state from the save file
+
+            Player player = new Player(playerName);
+            player.setHealth(playerHealth);
+            player.setAttack(playerAttack);
+            player.setDefense(playerDefense);
+            player.setCoins(playerCoins);
+
+            Game game = new Game(player);
+            game.setCurrentWorld(world);
+
+            System.out.println("Game progress loaded.");
+            return game;
+        } catch (IOException | NumberFormatException e) {
+            System.out.println("No saved game found or error loading game. Starting new game.");
+            // Create a new player and game if loading fails
+            Player newPlayer = new Player("Hero");
+            return new Game(newPlayer);
+        }
+    }
+}

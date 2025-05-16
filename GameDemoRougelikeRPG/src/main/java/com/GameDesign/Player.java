@@ -129,4 +129,5 @@ public class Player implements Serializable {
         coins += loot;
         System.out.println("You collected " + loot + " coins!");
     }
+
 }

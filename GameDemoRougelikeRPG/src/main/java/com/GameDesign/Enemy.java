@@ -1,11 +1,11 @@
 package com.GameDesign;
 
 public class Enemy {
-   private String name;
-   private int health;
-   private int attack;
-   private int defense;
-   private int coins;  // Loot for the player
+    private String name;
+    private int health;
+    private int attack;
+    private int defense;
+    private int coins;  // Loot for the player
 
     public Enemy(String name, int health, int attack, int defense, int coins) {
         this.name = name;
@@ -57,4 +57,3 @@ public class Enemy {
         this.name = name;
     }
 }
-

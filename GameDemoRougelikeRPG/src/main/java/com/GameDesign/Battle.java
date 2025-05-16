@@ -11,9 +11,16 @@ public class Battle {
         this.enemy = enemy;
     }
 
+    // Fixed constructor that doesn't require accomplice
+    public Battle(Player player, Enemy enemy) {
+        this.player = player;
+        this.enemy = enemy;
+        this.accomplice = null;
+    }
+
     // Fixed: Adding implementation for this static method
     public static void startBattle(Player player, Demon demon) {
-        Battle battle = new Battle(player, null, demon);
+        Battle battle = new Battle(player, demon);
         battle.startBattle();
     }
 

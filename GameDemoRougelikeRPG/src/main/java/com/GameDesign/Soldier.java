@@ -9,16 +9,16 @@ public class Soldier extends Accomplice {
     @Override
     void provideAid(Player player) {
         // Boost the player's attack by 5
-        player.attack += 5;
-        System.out.println(name + " boosts " + player.name + "'s attack by 5!");
+        player.setAttack(player.getAttack() + 5); // Fixed: Use setter instead of direct assignment
+        System.out.println(name + " boosts " + player.getName() + "'s attack by 5!"); // Fixed: Use getter for player's name
     }
 
     @Override
     public boolean isAlive() {
-        return false;
+        return health > 0; // Fixed: Return true if health is greater than 0
     }
 
-    // New method: Join the battle to fight alongside the player
+    @Override
     public void fight(Enemy enemy) {
         int damage = Math.max(0, getAttack() - enemy.getDefense());
         enemy.takeDamage(damage);

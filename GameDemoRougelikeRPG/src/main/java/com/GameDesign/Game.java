@@ -11,11 +11,13 @@ public class Game {
     private String currentWorld;  // "RealWorld" or "PortalWorld"
     private static final String SAVE_FILE = "src/main/java/resources/game_save.txt"; // File to save progress
     private EncounterHandler encounterHandler; // Added EncounterHandler reference
+    private World world; // Added World reference to track world state properly
 
     public Game(Player player) {
         this.player = player;
         this.currentWorld = "RealWorld"; // Default start world
-        this.encounterHandler = new EncounterHandler(player); // Initialize EncounterHandler
+        this.encounterHandler = new EncounterHandler(player, world); // Initialize EncounterHandler
+        this.world = new World(); // Initialize World to match the currentWorld state
     }
 
     // Getter for player
@@ -28,9 +30,12 @@ public class Game {
         return currentWorld;
     }
 
-    // Setter for currentWorld (optional)
+    // Setter for currentWorld (synchronized with World object)
     public void setCurrentWorld(String currentWorld) {
         this.currentWorld = currentWorld;
+        if (this.world != null) {
+            this.world.setCurrentWorld(currentWorld); // Update the World object's state too
+        }
     }
 
     public static void main(String[] args) {
@@ -66,7 +71,7 @@ public class Game {
         }
 
         Game game = new Game(player);
-        game.currentWorld = world; // Set the currentWorld after creating the Game instance
+        game.setCurrentWorld(world); // Use setter to ensure World object is updated too
         return game;
     }
 
@@ -127,8 +132,8 @@ public class Game {
         int worldChoice = scanner.nextInt();
         scanner.nextLine(); // consume newline
 
-        currentWorld = (worldChoice == 1) ? "PortalWorld" : "RealWorld";
-        System.out.println("You are in the " + currentWorld);
+        setCurrentWorld((worldChoice == 1) ? "PortalWorld" : "RealWorld"); // Use setter instead of direct assignment
+        System.out.println("You are in the " + getCurrentWorld()); // Use getter instead of direct access
     }
 
     private void showGameMenu() {
@@ -230,7 +235,7 @@ public class Game {
 
     private void resetGame() {
         player.resetStats();
-        currentWorld = "RealWorld"; // Default starting world
+        setCurrentWorld("RealWorld"); // Use setter instead of direct assignment
         System.out.println("Game reset. Your stats have been reduced.");
     }
 

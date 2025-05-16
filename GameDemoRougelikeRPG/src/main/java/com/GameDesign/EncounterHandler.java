@@ -7,9 +7,11 @@ public class EncounterHandler {
 
     private Player player;
     private Scanner scanner;
+    private World world;
 
-    public EncounterHandler(Player player) {
+    public EncounterHandler(Player player, World world) {
         this.player = player;
+        this.world = world;
         this.scanner = new Scanner(System.in);
     }
 
@@ -24,7 +26,7 @@ public class EncounterHandler {
         int choice = getValidInput(1, 2);  // Validates input
         if (choice == 1) {
             System.out.println("You chose to fight the Soldier!");
-            Battle battle = new Battle(player, soldier, new Demon());
+            Battle battle = new Battle(player, null, new Demon());
             battle.startBattle(); // Start the battle
         } else if (choice == 2) {
             System.out.println("You have allied with the Soldier!");
@@ -46,7 +48,7 @@ public class EncounterHandler {
         int choice = getValidInput(1, 2);  // Validates input
         if (choice == 1) {
             System.out.println("You chose to fight the Warrior!");
-            Battle battle = new Battle(player, warrior, new Demon());
+            Battle battle = new Battle(player, null, new Demon());
             battle.startBattle(); // Start the battle
         } else if (choice == 2) {
             System.out.println("You have allied with the Warrior!");
@@ -204,6 +206,18 @@ public class EncounterHandler {
                 System.out.println("Invalid input. Please enter a valid number.");
                 scanner.next();  // Clear the invalid input
             }
+        }
+    }
+
+    public void handleEncounter() {
+        Random random = new Random();
+        int encounterChance = random.nextInt(100);
+
+        if (encounterChance < 40) {
+            Enemy enemy = new Demon();  // Replace with your desired enemy class
+            System.out.println("Encounter: " + enemy.getName());
+            Battle battle = new Battle(player, enemy); // Fixed the constructor call
+            battle.startBattle();
         }
     }
 }
