@@ -1,19 +1,26 @@
+// File: Demon.java
 package com.GameDesign;
 
-public class Demon extends Enemy {
-    // Removed redundant fields as they shadow parent class fields
+import com.GameDesign.DataDefinitions;
+import com.GameDesign.DataDefinitions.Item;
 
-    public Demon() {
-        super("Demon of Despair", 100, 25, 10, 50);  // Example stats
+public class Demon extends Accomplice {
+    public Demon(String id, String name) {
+        super(id, name, AccompliceType.DEMON, Integer.MAX_VALUE);
+        stats.put("hp", 40);
+        stats.put("atk", 10);
     }
 
     @Override
-    public boolean isAlive() {
-        return getHealth() > 0;
+    public void offerAtCheckpoint(Player player) {
+        Item offer = DataDefinitions.randomPotion();
+        inventory.addItem(offer);
+        System.out.println(name + " offers " + offer.name);
     }
 
     @Override
-    public void takeDamage(int damage) {
-        super.takeDamage(damage);
+    public void onBattleTurn(Player player, Enemy enemy) {
+        if (!isAlive) return;
+        enemy.takeDamage(stats.getOrDefault("atk", 0));
     }
 }

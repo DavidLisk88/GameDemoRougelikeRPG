@@ -1,59 +1,32 @@
 package com.GameDesign;
 
+import com.GameDesign.DataDefinitions.EnemyDef;
+
+/** Game enemy instance created from DataDefinitions.EnemyDef. */
 public class Enemy {
-    private String name;
-    private int health;
-    private int attack;
-    private int defense;
-    private int coins;  // Loot for the player
+    private final EnemyDef def;
+    private int hp;
+    private int atk;
 
-    public Enemy(String name, int health, int attack, int defense, int coins) {
-        this.name = name;
-        this.health = health;
-        this.attack = attack;
-        this.defense = defense;
-        this.coins = coins;
+    public Enemy(EnemyDef def) {
+        this.def = def;
+        this.hp = def.stats.getOrDefault("hp", 10);
+        this.atk = def.stats.getOrDefault("atk", 5);
     }
 
-    // Method to handle taking damage
-    public void takeDamage(int damage) {
-        health -= damage;
+    public void takeDamage(int d) { hp -= d; }
+    public boolean isAlive()   { return hp > 0; }
+    public void attack(Player p) {
+        int baseAtk = this.atk;
+        int min = Math.max(1, baseAtk / 2);
+        int dmg = RandomGenerator.generateRandom(min, baseAtk);
+        p.takeDamage(dmg);
+
     }
 
-    // Method for the enemy to attack the player
-    public void attack(Player player) {
-        int damage = Math.max(0, attack - player.getDefense());  // Simple damage calculation
-        player.takeDamage(damage);
-        System.out.println(name + " attacks you for " + damage + " damage!");
-    }
-
-    public int getAttack() {
-        return attack;
-    }
-
-    // Getters for health, defense, and loot (coins)
-    public int getHealth() {
-        return health;
-    }
-
-    public int getDefense() {
-        return defense;
-    }
-
-    public int getCoins() {
-        return coins;
-    }
-
-    // Check if the enemy is alive
-    public boolean isAlive() {
-        return health > 0;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getName() { return def.name; }
+    public int getHp()      { return hp; }
+    public int getAtk()     { return atk; }
+    public int getLevel()   { return def.level; }
+    public DataDefinitions.EnemyType getType() { return def.type; }
 }

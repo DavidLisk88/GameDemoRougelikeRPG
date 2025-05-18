@@ -1,28 +1,32 @@
 package com.GameDesign;
 
+import com.GameDesign.DataDefinitions;
+
+/** A basic merchant-like companion. */
 public class Companion extends Accomplice {
-
-    public Companion(String name) {
-        super(name, 50, 10, 5);  // Example stats
+    public Companion(String id, String name) {
+        super(id, name, AccompliceType.COMPANION, Integer.MAX_VALUE);
+        stats.put("hp", 30);
+        stats.put("atk", 5);
     }
 
     @Override
-    void provideAid(Player player) {
-        // Example of providing aid to the player, e.g., giving an item or healing
-        player.health += 10;  // Healing the player by 10 health
-        System.out.println(name + " heals " + player.name + " for 10 health!");
+    public void offerAtCheckpoint(Player player) {
+        var it = DataDefinitions.randomWeapon();
+        inventory.addItem(it);
     }
 
     @Override
-    public boolean isAlive() {
-        return health > 0; // Fixed: Return true if health is greater than 0
-    }
-
-    @Override
-    public void fight(Enemy enemy) {
-        // Fixed: Implement fight logic
-        int damage = Math.max(0, getAttack() - enemy.getDefense());
-        enemy.takeDamage(damage);
-        System.out.println(name + " attacks " + enemy.getName() + " for " + damage + " damage!");
+    public void onBattleTurn(Player player, Enemy enemy) {
+      if (!isAlive) return;
+      int baseAtk = stats.getOrDefault("atk", 0);
+      int min = Math.max(1, baseAtk / 2);
+      int dmg = RandomGenerator.generateRandom(min, baseAtk);
+      System.out.println(name + " attacks for " + dmg + " damage!");
+      enemy.takeDamage(dmg);
+      turnsUsed++;
+      if (duration > 0 && turnsUsed >= duration){
+          isAlive = false;
+      }
     }
 }

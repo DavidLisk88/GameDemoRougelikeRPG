@@ -1,37 +1,22 @@
 package com.GameDesign;
 
+import com.GameDesign.DataDefinitions;
+
+/** A neutral buff-provider in evil alignment. */
 public class Fairy extends Accomplice {
-
-    // Constructor for Fairy, inheriting from Accomplice
-    public Fairy(String name, int health, int attack, int defense) {
-        super(name, health, attack, defense); // Inherit stats from Accomplice class
-    }
-
-    // Similar to Maiden, we could implement this method to merge stats with the player
-    @Override
-    void provideAid(Player player) {
-        // Evil Fairies may decrease the player's stats (evil effect)
-        player.setHealth(player.getHealth() - 5);  // Example: decrease health
-        player.setAttack(player.getAttack() - 2);  // Example: decrease attack
-        player.setDefense(player.getDefense() - 1);  // Example: decrease defense
-
-        System.out.println(name + " decreases your stats!");
-        System.out.println(player.getName() + "'s new stats: ");
-        System.out.println("Health: " + player.getHealth());
-        System.out.println("Attack: " + player.getAttack());
-        System.out.println("Defense: " + player.getDefense());
+    public Fairy(String id, String name) {
+        super(id, name, AccompliceType.FAIRY, 0);
+        stats.put("buffPower", 5);
     }
 
     @Override
-    public boolean isAlive() {
-        return health > 0; // Fixed: Return true if health is greater than 0
+    public void offerAtCheckpoint(Player player) {
+        var sk = DataDefinitions.randomSkill();
+        player.learnSkill(sk);
     }
 
     @Override
-    public void fight(Enemy enemy) {
-        // Fixed: Implement fight logic
-        int damage = Math.max(0, getAttack() - enemy.getDefense());
-        enemy.takeDamage(damage);
-        System.out.println(name + " attacks " + enemy.getName() + " for " + damage + " damage!");
+    public void onBattleTurn(Player player, Enemy enemy) {
+        // Fairies do not fight
     }
 }
